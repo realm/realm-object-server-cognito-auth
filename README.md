@@ -9,7 +9,7 @@ Start by creating a new project (if you haven't already done so):
 
     npm install -g realm-object-server
     ros init cognito-demo -t ts
-    cd cognito-demo-ts
+    cd cognito-demo
 
 Then install the custom auth provider from NPM:
 
@@ -47,7 +47,7 @@ Start by creating a new project (if you haven't already done so):
 
     npm install -g realm-object-server
     ros init cognito-demo -t js
-    cd cognito-demo-js
+    cd cognito-demo
 
 Then install the custom auth provider from NPM:
 
