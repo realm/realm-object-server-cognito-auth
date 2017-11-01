@@ -1,0 +1,32 @@
+{
+  "name": "realm-object-server-cognito-auth",
+  "version": "1.0.0",
+  "description": "Cognito authentication provider for Realm Object Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/realm/realm-object-server-cognito-auth.git"
+  },
+  "keywords": [
+    "Realm",
+    "authentication",
+    "Realm",
+    "Object",
+    "Server"
+  ],
+  "author": "Realm",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/realm/realm-object-server-cognito-auth/issues"
+  },
+  "homepage": "https://github.com/realm/realm-object-server-cognito-auth#readme",
+  "dependencies": {
+    "jsonwebtoken": "^8.1.0",
+    "jwk-to-pem": "^1.2.6",
+    "realm-object-server": "^2.0.12",
+    "request": "^2.83.0"
+  }
+}
