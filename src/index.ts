@@ -58,9 +58,7 @@ export class CognitoAuthProvider extends RealmObjectServer.auth.AuthProvider {
 
         // Fail if token is not from your User Pool
         if (decodedJwt.payload.iss !== this.iss) {
-            throw new RealmProblem.InvalidCredentials({
-                title: "The token sent by the client was issued by the correct ISS",
-            });
+            throw new RealmProblem.InvalidCredentials();
         }
 
         // Reject the jwt if it's not an 'Access Token'
