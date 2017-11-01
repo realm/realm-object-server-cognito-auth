@@ -10,7 +10,7 @@ class CognitoProvider extends RealmObjectServer.auth.AuthProvider {
         this.name = 'cognito';
 
         if (!iss) {
-            throw new deps.problem.RealmProblem.ServerMisConfiguration({
+            throw new RealmObjectServer.errors.RealmProblem.ServerMisconfiguration({
                 detail: 'Missing cognito configuration key: iss',
             });
         }
@@ -30,22 +30,22 @@ class CognitoProvider extends RealmObjectServer.auth.AuthProvider {
                 });
 
                 if (!decodedJwt) {
-                    throw new deps.problem.HttpProblem.Unauthorized({
-                        detail: 'The token sent by the client was not a valid JWT',
+                    throw new RealmObjectServer.errors.RealmProblem.InvalidCredentials({
+                        title: 'The token sent by the client was not a valid JWT',
                     });
                 }
 
                 // Fail if token is not from your User Pool
                 if (decodedJwt.payload.iss != this.options.iss) {
-                    throw new deps.problem.HttpProblem.Unauthorized({
-                        detail: 'The token sent by the client was issued by the correct ISS',
+                    throw new RealmObjectServer.errors.RealmProblem.InvalidCredentials({
+                        title: 'The token sent by the client was issued by the correct ISS',
                     });
                 }
 
                 // Reject the jwt if it's not an 'Access Token'
                 if (decodedJwt.payload.token_use != 'access') {
-                    throw new deps.problem.HttpProblem.Unauthorized({
-                        detail: 'The token sent by the client is not a valid access token',
+                    throw new RealmObjectServer.errors.RealmProblem.InvalidCredentials({
+                        title: 'The token sent by the client is not a valid access token',
                     });
                 }
 
@@ -54,28 +54,26 @@ class CognitoProvider extends RealmObjectServer.auth.AuthProvider {
                 var pem = pems[keyId];
 
                 if (!pem) {
-                    throw new deps.problem.HttpProblem.Unauthorized({
-                        detail: 'The token sent by the client is not a valid access token',
+                    throw new RealmObjectServer.errors.RealmProblem.InvalidCredentials({
+                        title: 'The token sent by the client is not a valid access token',
                     });
                 }
 
                 // Verify the signature of the JWT token to ensure it's really coming from your User Pool
-                return new Promise((res, rej) => {
-                    jwt.verify(token, pem, {
-                        issuer: this.options.iss
-                    }, (err, payload) => {
-                        if (err) {
-                            rej(err);
-                        }
-                        else {
-                            res({
-                                providerId: decodedJwt.payload.username, 
-                                provider: "cognito", 
-                                isAdmin: false, 
-                                userId: null
-                            });
-                        }
-                    });
+                jwt.verify(token, pem, {
+                    issuer: this.options.iss
+                }, (err, payload) => {
+                    if (err) {
+                        throw new RealmObjectServer.errors.RealmProblem.InvalidCredentials({
+                            title: `Can't verify the JWT signature: ${err.toString()}`,
+                        });
+                    }
+                    return this.service.createOrUpdateUser(
+                        payload.username,
+                        "cognito",
+                        false,
+                        null
+                    );
                 });
             });
     }
@@ -92,8 +90,8 @@ class CognitoProvider extends RealmObjectServer.auth.AuthProvider {
 
             return this.request(httpOptions)
                 .catch((err) => {
-                    throw new deps.problem.HttpProblem.Unauthorized({
-                        detail: `Unable to retrieve PEMs from Cognito: ${err.toString()}`,
+                    throw new RealmObjectServer.errors.RealmProblem.InvalidCredentials({
+                        title: `Unable to retrieve PEMs from Cognito: ${err.toString()}`,
                     });
                 })
                 .then((result) => {
