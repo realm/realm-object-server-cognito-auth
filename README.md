@@ -1,3 +1,8 @@
+# DEPRECATED
+With the introduction of [MongoDB Realm](https://www.mongodb.com/realm), this project is **deprecated**. Please use [MongoDB Realm Cloud](https://docs.mongodb.com/realm/).
+
+-----
+
 # realm-object-server-cognito-auth
 Cognito authentication provider for Realm Object Server
 
